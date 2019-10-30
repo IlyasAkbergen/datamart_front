@@ -14,5 +14,13 @@ export default {
         commit('delToken')
         return res
       })
+  },
+  getUser ({ commit }) {
+    return axios.get('/auth/user')
+      .then((res) => {
+        commit('setUser', res.data.user)
+        commit('setFiltersets', res.data.filtersets, { module: 'filter' })
+        return res
+      })
   }
 }

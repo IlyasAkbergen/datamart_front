@@ -1,5 +1,6 @@
 <template>
   <v-container
+    v-show="!reportsloading"
     fill-height
     fluid
     grid-list-xl
@@ -94,32 +95,32 @@
         sm6
         xs12
         md6
-        lg3
+        lg4
       >
         <material-stats-card
+          :value="Math.round(generalReport.payout_sum/1000000) + ' M/' + Math.round(generalReport.vts_overall_sum/1000000) + ' M'"
           color="green"
-          icon="mdi-store"
-          title="Revenue"
-          value="$34,245"
+          icon="mdi-cash"
+          small-value="Тг"
+          title="Суммы убытков/доходов"
           sub-icon="mdi-calendar"
-          sub-text="Last 24 Hours"
+          :sub-text="filters_label"
         />
       </v-flex>
       <v-flex
         sm6
         xs12
         md6
-        lg3
+        lg4
       >
         <material-stats-card
           color="orange"
-          icon="mdi-content-copy"
-          title="Used Space"
-          value="49/50"
-          small-value="GB"
+          icon="mdi-counter"
+          title="Количество убытков/продаж"
+          :value="generalReport.vts_lost_count + '/' + generalReport.count"
           sub-icon="mdi-alert"
-          sub-icon-color="error"
-          sub-text="Get More Space..."
+          sub-icon-color="mdi-calendar"
+          :sub-text="filters_label"
           sub-text-color="text-primary"
         />
       </v-flex>
@@ -127,32 +128,33 @@
         sm6
         xs12
         md6
-        lg3
+        lg4
       >
         <material-stats-card
           color="red"
-          icon="mdi-information-outline"
-          title="Fixed Issues"
-          value="75"
+          icon="mdi-plus"
+          title="Суммы кросс продаж\огпо втс"
+          :value="Math.round(generalReport.vts_cross_result / 1000000) + 'M/' + Math.round(generalReport.ogpo_vts_result / 1000000) + ' M'"
+          small-value="Тг"
           sub-icon="mdi-tag"
           sub-text="Tracked from Github"
         />
       </v-flex>
-      <v-flex
-        sm6
-        xs12
-        md6
-        lg3
-      >
-        <material-stats-card
-          color="info"
-          icon="mdi-twitter"
-          title="Followers"
-          value="+245"
-          sub-icon="mdi-update"
-          sub-text="Just Updated"
-        />
-      </v-flex>
+<!--      <v-flex-->
+<!--        sm6-->
+<!--        xs12-->
+<!--        md6-->
+<!--        lg4-->
+<!--      >-->
+<!--        <material-stats-card-->
+<!--          color="info"-->
+<!--          icon="mdi-twitter"-->
+<!--          title="Followers"-->
+<!--          value="+245"-->
+<!--          sub-icon="mdi-update"-->
+<!--          sub-text="Just Updated"-->
+<!--        />-->
+<!--      </v-flex>-->
       <v-flex
         md12
         lg6
@@ -360,6 +362,7 @@
 </template>
 
 <script>
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
@@ -504,7 +507,18 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState('report', ['generalReport', 'reportsloading']),
+    ...mapState('filter', ['filter_set']),
+    ...mapGetters('filter', ['filters_label'])
+  },
+  created () {
+    this.getGeneralReport({
+      filter_set: this.filter_set
+    })
+  },
   methods: {
+    ...mapActions('report', ['getGeneralReport']),
     complete (index) {
       this.list[index] = !this.list[index]
     }

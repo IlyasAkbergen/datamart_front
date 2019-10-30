@@ -85,6 +85,7 @@ export default {
   methods: {
     ...mapMutations('app', ['setIsLoginPage']),
     ...mapActions('notify', ['notify']),
+    ...mapActions('auth', ['login', 'getUser']),
     submit () {
       this.$v.form.$touch()
 
@@ -96,9 +97,10 @@ export default {
         return false
       }
 
-      this.$store.dispatch('auth/login', this.form)
+      this.login(this.form)
         .then((res) => {
           this.$router.push({ name: 'dashboard' })
+          this.getUser()
           return res
         }).catch(error => this.notify({
           text: 'Возникла ошибка: ' + error,

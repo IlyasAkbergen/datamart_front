@@ -25,86 +25,46 @@
       <v-container grid-list-xl>
         <v-layout wrap>
           <v-flex xs12>
-            <div class="text-xs-center body-2 text-uppercase sidebar-filter">Sidebar Filters</div>
+            <div class="text-xs-center body-2 text-uppercase sidebar-filter">Фильтры</div>
+<!--  TODO -->
+<!--              <v-select-->
+<!--                        :items="filter_sets"-->
+<!--                        label="Комбинации фильтров"-->
+<!--                        item-text="name"-->
+<!--                        :item-value="function(item) {-->
+<!--                          return item-->
+<!--                        }"-->
+<!--                        v-model="selected_filter_set"-->
+<!--                        @input="setFilterSet(selected_filter_set)"-->
+<!--                        solo-->
+<!--              ></v-select>-->
 
-            <v-layout justify-center>
-              <v-avatar
-                v-for="c in colors"
-                :key="c"
-                :class="[c === color ? 'color-active color-' + c: 'color-' + c]"
-                size="23"
+            <div class="text-center text-uppercase sidebar-filter">
+              <label>Период</label>
+              <datepicker :bootstrap-styling="true"
+                          v-model="filter_set.from"
+                          format="yyyy-MM-dd"></datepicker>
+              <datepicker v-model="filter_set.to" format="yyyy-MM-dd"></datepicker>
+            </div>
 
-                @click="setColor(c)"
-              />
-            </v-layout>
+            <div>
+            </div>
             <v-divider class="mt-3"/>
           </v-flex>
-          <v-flex
-            xs12
-          >
-            <div class="text-xs-center body-2 text-uppercase sidebar-filter">Images</div>
-          </v-flex>
-          <v-flex
-            v-for="img in images"
-            :key="img"
-            xs3
-          >
-            <v-img
-              :class="[image === img ? 'image-active' : '']"
-              :src="img"
-              height="120"
-              @click.native="setImage(img)"
-            />
-          </v-flex>
-          <v-flex xs12>
-            <v-btn
-              href="https://www.creative-tim.com/product/vuetify-material-dashboard"
-              target="_blank"
-              color="success"
-              block
-            >
-              Free Download
-            </v-btn>
-          </v-flex>
-          <v-flex xs12>
-            <v-btn
-              href="https://demos.creative-tim.com/vuetify-material-dashboard/documentation"
-              target="_blank"
-              class="white--text"
-              color="primary"
-              block
-            >
-              Documentation
-            </v-btn>
-          </v-flex>
+
+          <filter-set :filter-set="filter_set"></filter-set>
+
           <v-flex xs12>
             <div class="text-xs-center body-2 text-uppercase">
-              <div class=" sidebar-filter">
-                Thank You for Sharing!
-              </div>
-
-              <div>
-                <v-btn
-                  color="indigo"
-                  class="mr-2 v-btn-facebook"
-                  fab
-                  icon
-                  small
-                  round
-                >
-                  <v-icon>mdi-facebook</v-icon>
-                </v-btn>
-                <v-btn
-                  color="cyan"
-                  class="v-btn-twitter"
-                  fab
-                  icon
-                  small
-                  round
-                >
-                  <v-icon>mdi-twitter</v-icon>
-                </v-btn>
-              </div>
+              <v-btn
+                      color="secondary"
+                      small
+                      round
+                      :disabled="reportsloading"
+                      @click="commitFilters()"
+              >
+                Применить
+              </v-btn>
             </div>
           </v-flex>
         </v-layout>
@@ -117,37 +77,43 @@
 // Utilities
 import {
   mapMutations,
-  mapState
+  mapState,
+  mapActions
 } from 'vuex'
 
+import FilterSet from './FilterSet.vue'
+
 export default {
+  components: {
+    FilterSet
+  },
   data: () => ({
-    colors: [
-      'primary',
-      'info',
-      'success',
-      'warning',
-      'danger'
-    ],
-    images: [
-      'https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-1.23832d31.jpg',
-      'https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-2.32103624.jpg',
-      'https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-3.3a54f533.jpg',
-      'https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-4.3b7e38ed.jpg'
-    ]
+    from_menu: false,
+    to_menu: false
+    // selected_filter_set: 'default',
   }),
 
   computed: {
     ...mapState('app', ['image', 'color']),
-    color () {
-      return this.$store.state.app.color
-    }
+    ...mapState('filter', [
+      'filter_sets',
+      'filter_set'
+    ]),
+    ...mapState('report', ['reportsloading'])
+    // color () {
+    //   return this.$store.state.app.color
+    // }
   },
-
   methods: {
+    ...mapActions('report', ['getGeneralReport']),
+    ...mapActions('filter', ['getRegions']),
     ...mapMutations('app', ['setImage']),
-    setColor (color) {
-      this.$store.state.app.color = color
+    ...mapMutations('filter', ['setFilterSet']),
+    // setColor (color) {
+    //   this.$store.state.app.color = color
+    // },
+    commitFilters () {
+      this.getGeneralReport(this.filter_set)
     }
   }
 }

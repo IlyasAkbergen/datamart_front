@@ -1,8 +1,10 @@
 // https://vuex.vuejs.org/en/modules.html
 import auth from './auth'
 import notify from './notify'
+import report from './report'
+import filter from './filter'
 const requireModule = require.context('.', true, /\.js$/)
-const modules = { auth, notify }
+const modules = { auth, report, notify, filter }
 
 requireModule.keys().forEach(fileName => {
   if (fileName === './index.js') return

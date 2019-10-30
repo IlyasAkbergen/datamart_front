@@ -11,6 +11,7 @@
       >
         <a
           :href="link.Link"
+          target="_blank"
           class="tertiary--text footer-links">{{ link.name }}</a>
       </span>
     </div>
@@ -19,12 +20,8 @@
       &copy;
       {{ (new Date()).getFullYear() }}
       <a
-        href="https://www.creative-tim.com/"
-        target="_blank">Creative Tim</a>, made with
-      <v-icon
-        color="tertiary"
-        size="17">mdi-heart</v-icon>
-      for a better web
+        href="https://www.kupipolis.kz/"
+        target="_blank">Centras Insurance</a>
     </span>
   </v-footer>
 </template>
@@ -36,7 +33,7 @@ export default {
       { name: 'Home', Link: '/' },
       { name: 'Creative Tim', Link: 'https://www.creative-tim.com' },
       { name: 'About Us', Link: 'https://creative-tim.com/presentation' },
-      { name: 'Blog', Link: 'https://blog.creative-tim.com' }
+      { name: 'Автор', Link: 'https://github.com/ilyasakbergen' }
     ]
   })
 }

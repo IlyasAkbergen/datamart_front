@@ -16,5 +16,8 @@ export default {
   delToken (state) {
     localStorage.removeItem('token')
     state.token = localStorage.getItem('token')
+  },
+  setUser (state, value) {
+    state.user = value
   }
 }

@@ -22,10 +22,10 @@
         class="category grey--text font-weight-light"
         v-text="title"
       />
-      <h3
-        class="title display-1 font-weight-light">
+      <strong
+        class="h5 font-weight-light">
         {{ value }} <small>{{ smallValue }}</small>
-      </h3>
+      </strong>
     </div>
 
     <template slot="actions">
